@@ -146,12 +146,69 @@
 				letter-spacing: 0.08em;
 				text-align: right;
 			}
+
+			body.splash-active #canvas {
+				visibility: hidden;
+			}
+
+			.splash {
+				position: fixed;
+				inset: 0;
+				display: grid;
+				place-items: center;
+				z-index: 20;
+				background: #000;
+				color: #fff;
+				font-family: Arial, sans-serif;
+			}
+
+			.splash-presents,
+			.splash-title {
+				grid-area: 1 / 1;
+				margin: 0;
+				text-transform: uppercase;
+			}
+
+			.splash-presents {
+				font-size: clamp(18px, 3vw, 34px);
+				font-weight: 700;
+				letter-spacing: 0.28em;
+				opacity: 0;
+				animation: presents 2.8s ease-in-out forwards;
+			}
+
+			.splash-title {
+				color: #168cff;
+				font-size: clamp(38px, 9vw, 112px);
+				font-weight: 900;
+				letter-spacing: 0.12em;
+				opacity: 0;
+				transform: scale(0.6);
+				animation: title-pop 1s cubic-bezier(0.2, 1.4, 0.4, 1) 3s forwards;
+				text-shadow: 0 0 24px rgba(22, 140, 255, 0.55);
+			}
+
+			@keyframes presents {
+				0%, 18% { opacity: 0; transform: translateY(8px); }
+				35%, 78% { opacity: 1; transform: translateY(0); }
+				100% { opacity: 0; transform: translateY(-8px); }
+			}
+
+			@keyframes title-pop {
+			0% { opacity: 0; transform: scale(0.6); }
+			65% { opacity: 1; transform: scale(1.08); }
+			100% { opacity: 1; transform: scale(1); }
+			}
 		</style>
 	</head>
-	<body>
+	<body class="splash-active">
 		<div class="spinner" id="spinner" style="display: none;"></div>
 		<div id="status" style="display: none;">Downloading...</div>
 		<progress id="progress" value="0" max="100" hidden="hidden"></progress>
+		<div class="splash" id="splash" aria-label="Zander presents Sonic CD">
+			<p class="splash-presents">ZANDER PRESENTS</p>
+			<h1 class="splash-title">SONIC CD</h1>
+		</div>
 		<canvas id="canvas" onclick="window.focus();" oncontextmenu="event.preventDefault();"></canvas>
 		<div class="watermark" aria-hidden="true">ZANDER<span class="watermark-subtitle">shelburne made this</span></div>
 		<textarea id="output" style="display: none;" rows="8"></textarea>
@@ -258,6 +315,10 @@
 					if (text) Module.printErr('[post-exception status] ' + text);
 				};
 			};
+			setTimeout(function () {
+				document.body.classList.remove('splash-active');
+				document.getElementById('splash').remove();
+			}, 6000);
 		</script>
 		<script async="async" defer="defer" type="text/javascript" src="index.js"></script>
 	</body>
