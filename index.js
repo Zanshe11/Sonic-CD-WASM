@@ -462,7 +462,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
 // end include: web_or_worker_shell_read.js
   }
 
-  setWindowTitle = (title) => document.title = title;
+  setWindowTitle = () => document.title = 'ZANDER SHELBURNE-SONIC CD';
 } else
 {
   throw new Error('environment detection error');

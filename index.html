@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-		<title>Sonic CD</title>
+		<title>ZANDER SHELBURNE-SONIC CD</title>
 
 		<link type="text/css" rel="stylesheet" href="css/fonts.css" />
 		<style type="text/css">
@@ -122,6 +122,30 @@
 				font-family: 'Lucida Console', Monaco, monospace;
 				outline: none;
 			}
+
+			.watermark {
+				position: fixed;
+				top: 16px;
+				right: 8px;
+				z-index: 10;
+				color: rgba(255, 255, 255, 0.62);
+				font-family: Arial, sans-serif;
+				font-size: 16px;
+				font-weight: 700;
+				letter-spacing: 0.12em;
+				pointer-events: none;
+				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+			}
+
+			.watermark-subtitle {
+				display: block;
+				margin-top: 3px;
+				color: rgba(255, 255, 255, 0.48);
+				font-size: 10px;
+				font-weight: 400;
+				letter-spacing: 0.08em;
+				text-align: right;
+			}
 		</style>
 	</head>
 	<body>
@@ -129,6 +153,7 @@
 		<div id="status" style="display: none;">Downloading...</div>
 		<progress id="progress" value="0" max="100" hidden="hidden"></progress>
 		<canvas id="canvas" onclick="window.focus();" oncontextmenu="event.preventDefault();"></canvas>
+		<div class="watermark" aria-hidden="true">ZANDER<span class="watermark-subtitle">shelburne made this</span></div>
 		<textarea id="output" style="display: none;" rows="8"></textarea>
 
 		<script type="text/javascript">
@@ -150,7 +175,18 @@
 			var spinnerElement = document.getElementById('spinner');
 
 			var Module = {
-				preRun: [],
+				arguments: ['console=true'],
+				preRun: [function () {
+					var settings = '[Game]\ndevMenu=y\n';
+					var settingsData = new TextEncoder().encode(settings);
+					Module.FS_createDataFile('/', 'settings.ini', settingsData, true, true);
+
+					var saveData = new Uint8Array(0x8000);
+					var saveView = new DataView(saveData.buffer);
+					saveView.setInt32(0x80, 1, true);
+					saveView.setInt32(0x9C, 7, true);
+					Module.FS_createDataFile('/', 'SData.bin', saveData, true, true);
+				}],
 				postRun: [],
 				print: (function () {
 					var element = document.getElementById('output');
